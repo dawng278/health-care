@@ -1,0 +1,18 @@
+# Secrets và môi trường local
+.env
+
+# Dataset gốc (file lớn, không commit lên Git)
+hadoop/data/raw/*.csv
+hadoop/data/raw/*.json
+
+# Output tạm thời
+output/json/*.json
+output/charts/*.html
+output/charts/*.png
+
+# Ruby
+.bundle/
+vendor/bundle/
+
+# Hive temp
+*.hql.log

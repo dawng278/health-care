@@ -1,0 +1,3 @@
+#!/bin/bash
+# Upload dataset lên HDFS
+# hadoop fs -put ...

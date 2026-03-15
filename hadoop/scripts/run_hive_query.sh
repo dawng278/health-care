@@ -1,0 +1,3 @@
+#!/bin/bash
+# Wrapper chạy Hive query
+# hive -f ...
