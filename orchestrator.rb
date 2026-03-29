@@ -1,44 +1,62 @@
 #!/usr/bin/env ruby
-# orchestrator.rb — Pipeline Orchestrator
-# Chạy: ruby orchestrator.rb
+# -----------------------------------------------------------------------------
+# Script: orchestrator.rb
+# Mô tả: Tổng quản điều phối toàn bộ pipeline Big Data.
+# -----------------------------------------------------------------------------
 
 require_relative 'config'
 require_relative 'lib/hadoop_connector'
 require_relative 'lib/data_loader'
-require_relative 'lib/analytics'
-require_relative 'lib/visualizer'
-require 'fileutils'
+require_relative 'lib/analytics'  # Đã hoàn thành
+require_relative 'lib/visualizer' # Đã hoàn thành
 
-puts '=' * 60
-puts 'Healthcare Big Data Pipeline — Starting'
-puts '=' * 60
+puts "=" * 60
+puts "🏥 Healthcare Analytics Pipeline - Orchestrator"
+puts "=" * 60
 
-# --- STEP 1: Upload raw data lên HDFS ---
-puts "\n[Step 1/4] Uploading dataset to HDFS..."
-HadoopConnector.upload(
-  Config::DATASET_LOCAL,
-  Config::HDFS_RAW_DIR
-)
+begin
+  # Step 1: Validate Environment
+  Config.validate!
 
-# --- STEP 2: Chạy Hive queries (Member 1 đã viết HQL) ---
-puts "\n[Step 2/4] Running Hive queries..."
-['query_age_dist', 'query_top_diseases', 'query_billing'].each do |q|
-  HadoopConnector.run_hive(
-    File.join(Config::HIVE_QUERY_DIR, "#{q}.hql")
-  )
+  # Step 2: Upload Files
+  puts "\n[Step 2/5] Uploading dataset to HDFS..."
+  if File.exist?(Config::DATASET_LOCAL)
+    HadoopConnector.upload(Config::DATASET_LOCAL, Config::HDFS_RAW_DIR)
+  else
+    raise "Không tìm thấy file dataset tại #{Config::DATASET_LOCAL}"
+  end
+
+  # Step 3: Run Hive Analytics
+  puts "\n[Step 3/5] Running Hive queries..."
+  # create_tables cần chạy trước để khai báo Schema
+  HadoopConnector.run_hive(File.join(Config::HIVE_QUERY_DIR, 'create_tables.hql'))
+  
+  tasks = ['query_age_dist', 'query_top_diseases', 'query_billing', 'query_admission']
+  tasks.each do |t|
+    hql_path = File.join(Config::HIVE_QUERY_DIR, "#{t}.hql")
+    HadoopConnector.run_hive(hql_path)
+  end
+
+  # Step 4: Fetch Results
+  puts "\n[Step 4/5] Fetching results from HDFS..."
+  csv_files = DataLoader.fetch_all_outputs
+  puts "  [OK] Toàn bộ dữ liệu đã được tải về #{Config::LOCAL_OUTPUT_DIR}"
+
+  # Step 5: Finalize Visualization
+  puts "\n[Step 5/5] Running analytics and generating dashboard..."
+  analytics_data = Analytics.run(csv_files)
+  html_path      = Visualizer.render(analytics_data)
+
+  puts "\n" + "=" * 60
+  puts "[SUCCESS] Pipeline completed successfully!"
+  puts "Dashboard Path: #{html_path}"
+  puts "=" * 60
+
+rescue => e
+  puts "\n" + "!" * 60
+  puts "[FATAL ERROR] Pipeline stopped!"
+  puts "Message: #{e.message}"
+  puts "Gợi ý: Kiểm tra Hadoop/Hive status hoặc file .env của bạn."
+  puts "!" * 60
+  exit 1
 end
-
-# --- STEP 3: Download output từ HDFS ---
-puts "\n[Step 3/4] Fetching output from HDFS..."
-age_csv  = File.join(Config::LOCAL_OUTPUT_DIR, 'age_distribution.csv')
-HadoopConnector.download(
-  "#{Config::HDFS_OUTPUT_DIR}/age_dist", age_csv
-)
-
-# --- STEP 4: Phân tích + Visualization ---
-puts "\n[Step 4/4] Running analytics and generating charts..."
-raw_data   = DataLoader.load_csv(age_csv)         # M2
-analytics  = Analytics.run(raw_data)              # M3
-Visualizer.render(analytics)                       # M4
-
-puts "\n[DONE] Dashboard: #{Config::CHART_OUTPUT_DIR}/dashboard.html"

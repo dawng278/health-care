@@ -1,36 +1,53 @@
-require_relative '../config'
+# -----------------------------------------------------------------------------
+# Script: hadoop_connector.rb
+# Mô tả: Lớp kết nối trung gian gọi các lệnh Hadoop/Hive qua Open3.
+# -----------------------------------------------------------------------------
+
 require 'open3'
-require 'fileutils'
+require_relative '../config'
 
 module HadoopConnector
-  # Upload file lên HDFS
   def self.upload(local_path, hdfs_path)
-    cmd = "#{Config::HADOOP_BIN} fs -put -f #{local_path} #{hdfs_path}"
-    execute!(cmd, "Uploading #{File.basename(local_path)} to HDFS")
+    execute!("#{Config::HADOOP_BIN} fs -put -f #{local_path} #{hdfs_path}", "Upload to HDFS")
   end
 
-  # Chạy Hive query file (.hql)
   def self.run_hive(hql_file)
-    cmd = "#{Config::HIVE_BIN} -f #{hql_file}"
-    execute!(cmd, "Running Hive: #{File.basename(hql_file)}")
+    execute!("#{Config::HIVE_BIN} -f #{hql_file}", "Hive Query Execution: #{File.basename(hql_file)}")
   end
 
-  # Download output từ HDFS về local
-  def self.download(hdfs_path, local_path)
-    FileUtils.mkdir_p(File.dirname(local_path))
-    cmd = "#{Config::HADOOP_BIN} fs -getmerge #{hdfs_path} #{local_path}"
-    execute!(cmd, "Downloading #{hdfs_path}")
+  def self.download(hdfs_path, local_target)
+    # Dùng getmerge để gom các file part-* thành 1 file CSV duy nhất
+    execute!("#{Config::HADOOP_BIN} fs -getmerge #{hdfs_path} #{local_target}", "Download from HDFS")
+  end
+
+  def self.hdfs_exists?(path)
+    _, _, status = Open3.capture3("#{Config::HADOOP_BIN} fs -test -e #{path}")
+    status.success?
+  end
+
+  def self.list_output(hdfs_dir)
+    stdout, _, _ = execute!("#{Config::HADOOP_BIN} fs -ls #{hdfs_dir}", "List HDFS Directory")
+    stdout
   end
 
   private
 
   def self.execute!(cmd, label)
-    puts "[Hadoop] #{label}"
-    stdout, stderr, status = Open3.capture3(cmd)
-    unless status.success?
-      raise "[ERROR] #{label} failed:\n#{stderr}"
+    puts "  [EXEC] #{label}..."
+    
+    # Đảm bảo JAVA_HOME được truyền vào nếu có trong ENV
+    env = {}
+    env["JAVA_HOME"] = ENV["JAVA_HOME"] if ENV["JAVA_HOME"]
+
+    stdout, stderr, status = Open3.capture3(env, cmd)
+
+    if status.success?
+      puts "  [OK] #{label} completed."
+      return [stdout, status]
+    else
+      puts "  [ERROR] #{label} failed!"
+      puts "  Details: #{stderr}"
+      raise "Command failed: #{cmd}\nError: #{stderr}"
     end
-    puts "[OK] Done"
-    stdout
   end
 end

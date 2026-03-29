@@ -1,18 +1,23 @@
-# Secrets và môi trường local
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
 .env
 
-# Dataset gốc (file lớn, không commit lên Git)
-hadoop/data/raw/*.csv
-hadoop/data/raw/*.json
+# Models & Data (Keep JSON and CSV for demo if small, else ignore)
+# healthcare_dataset.csv  # Keep for demo (small ~8MB)
+*.keras
+*.pkl
+*.model
+*.h5
 
-# Output tạm thời
-output/json/*.json
-output/charts/*.html
-output/charts/*.png
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
 
-# Ruby
-.bundle/
-vendor/bundle/
-
-# Hive temp
-*.hql.log
+# Output (Optional: only ignore dynamically generated reports)
+# Bao_cao_*.docx

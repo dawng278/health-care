@@ -1,38 +1,50 @@
-require_relative '../config'
+# -----------------------------------------------------------------------------
+# Script: visualizer.rb (Member 4 - Visualization Expert)
+# -----------------------------------------------------------------------------
+
+require 'erb'
 require 'json'
 require 'fileutils'
+require_relative '../config'
 
 module Visualizer
-  # Entry point — nhận Hash từ Analytics.run()
-  def self.render(analytics_result)
-    FileUtils.mkdir_p(Config::JSON_OUTPUT_DIR)
-    FileUtils.mkdir_p(Config::CHART_OUTPUT_DIR)
+  # Entry point chính của visualization
+  def self.render(results)
+    puts "  [RENDER] Finalizing visualization artifacts..."
 
-    export_json(analytics_result)
-    generate_dashboard(analytics_result)
-  end
+    # 1. Xuất file JSON dữ liệu thô phục vụ các nhu cầu khác
+    export_json(results)
 
-  private
-
-  def self.export_json(data)
-    [:age_distribution, :top_diseases, :billing_summary].each do |key|
-      path = File.join(Config::JSON_OUTPUT_DIR, "#{key}.json")
-      File.write(path, JSON.pretty_generate(data[key]))
-      puts "  [JSON] Exported: #{path}"
+    # 2. Đọc file template HTML
+    template_path = File.join(Config::PROJECT_ROOT, 'output', 'charts', 'dashboard_template.html')
+    unless File.exist?(template_path)
+      raise "Dashboard template not found at #{template_path}"
     end
+    
+    html_template = File.read(template_path)
+
+    # 3. Sử dụng ERB để inject data vào JavaScript biến 'DATA'
+    # 'results' sẽ có sẵn trong scope của ERB
+    renderer = ERB.new(html_template)
+    final_html = renderer.result(binding)
+
+    # 4. Lưu ra file dashboard.html chính thức
+    output_path = File.join(Config::CHART_OUTPUT_DIR, 'dashboard.html')
+    FileUtils.mkdir_p(File.dirname(output_path))
+    File.write(output_path, final_html)
+    
+    puts "  [OK] Dashboard fully generated: #{output_path}"
+    output_path
   end
 
-  def self.generate_dashboard(data)
-    # TODO (Member 4): Tạo HTML embed Chart.js
-    # Đọc JSON đã xuất và nhúng vào dashboard.html
-    path = File.join(Config::CHART_OUTPUT_DIR, 'dashboard.html')
-    File.write(path, build_html(data))
-    puts "  [HTML] Dashboard: #{path}"
-  end
-
-  def self.build_html(data)
-    # TODO (Member 4): Implement template HTML + Chart.js
-    # Bạn có thể copy HTML từ template ở mục 7.2 vào đây
-    raise NotImplementedError, 'Member 4: implement build_html'
+  # Xuất các file JSON riêng lẻ vào output/json/
+  def self.export_json(data)
+    FileUtils.mkdir_p(Config::JSON_OUTPUT_DIR)
+    
+    data.each do |key, value|
+      path = File.join(Config::JSON_OUTPUT_DIR, "#{key}.json")
+      File.write(path, JSON.pretty_generate(value))
+      puts "    -> JSON Exported: #{File.basename(path)}"
+    end
   end
 end
