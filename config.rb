@@ -15,11 +15,19 @@ else
 end
 
 module Config
+  # --- Deployment Mode ---
+  DEPLOY_MODE     = ENV.fetch('DEPLOY_MODE', 'local')
+
   # --- Hadoop / HDFS Paths ---
+  # Ưu tiên lấy từ ENV cho Docker
   HADOOP_HOME     = ENV.fetch('HADOOP_HOME', '/usr/local/hadoop')
   HADOOP_BIN      = File.join(HADOOP_HOME, 'bin', 'hadoop')
   HIVE_BIN        = ENV.fetch('HIVE_BIN', '/usr/local/hive/bin/hive')
+  
+  # Hostname name phụ thuộc vào môi trường
   HDFS_HOST       = ENV.fetch('HDFS_HOST', 'hdfs://localhost:9000')
+  HIVE_HOST       = ENV.fetch('HIVE_HOST', 'localhost')
+  HIVE_PORT       = ENV.fetch('HIVE_PORT', '10000')
 
   HDFS_RAW_DIR    = "#{HDFS_HOST}/healthcare/raw"
   HDFS_OUTPUT_DIR = "#{HDFS_HOST}/healthcare/output"
@@ -34,18 +42,22 @@ module Config
 
   # --- Dataset & ML API ---
   DATASET_LOCAL   = File.join(LOCAL_DATA_DIR, 'healthcare_dataset.csv')
-  FLASK_API_URL   = ENV.fetch('FLASK_API_URL', 'http://localhost:5000')
+  FLASK_API_URL   = ENV.fetch('FLASK_API_URL', 'http://localhost:5005')
   TOP_N_DISEASES  = ENV.fetch('TOP_N_DISEASES', '10').to_i
 
   def self.validate!
     puts "[Step 1/5] Validating environment..."
+    puts "  [INFO] Mode: #{DEPLOY_MODE}"
     
     unless File.exist?('.env')
-      puts "[WARNING] File .env chưa được tạo. Đang sử dụng giá trị mặc định."
+      puts "  [WARNING] File .env chưa được tạo. Đang sử dụng giá trị mặc định."
     end
 
-    unless File.exist?(HADOOP_BIN)
-        raise "Hadoop binary không tồn tại tại #{HADOOP_BIN}. Hãy kiểm tra HADOOP_HOME trong .env"
+    # Chỉ kiểm tra Hadoop/Hive binary nếu ở Local mode
+    if DEPLOY_MODE == 'local'
+      unless File.exist?(HADOOP_BIN)
+          raise "Hadoop binary không tồn tại tại #{HADOOP_BIN}. Hãy kiểm tra HADOOP_HOME trong .env"
+      end
     end
 
     # Tạo các thư mục output local nếu chưa có

@@ -1,0 +1,11 @@
+FROM apache/hadoop:3.3.6
+
+# Cấu hình DataNode
+COPY core-site.xml $HADOOP_CONF_DIR/core-site.xml
+COPY hdfs-site.xml $HADOOP_CONF_DIR/hdfs-site.xml
+
+USER root
+RUN mkdir -p /hadoop/dfs/data && chmod -R 777 /hadoop/dfs/data
+
+EXPOSE 9864
+CMD ["hdfs", "datanode"]

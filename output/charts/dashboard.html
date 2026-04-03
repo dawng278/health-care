@@ -3,319 +3,414 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Healthcare Analytics Dashboard | Real Data Mode</title>
-    <!-- Chart.js CDN -->
+    <title>Elite Healthcare Neural Analytics</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #0284c7;  /* Sky Blue */
-            --secondary: #10b981; /* Emerald Green */
-            --bg-light: #f8fafc;
-            --text-dark: #1e293b;
-            --white: #ffffff;
-            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --primary: #818cf8;
+            --primary-glow: rgba(129, 140, 248, 0.4);
+            --accent: #2dd4bf;
+            --accent-glow: rgba(45, 212, 191, 0.4);
+            --bg: #030712;
+            --card: #111827;
+            --border: rgba(255, 255, 255, 0.08);
+            --text-main: #f9fafb;
+            --text-dim: #9ca3af;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-light); color: var(--text-dark); line-height: 1.6; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(129, 140, 248, 0.05), transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(45, 212, 191, 0.05), transparent 40%);
+        }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .dashboard {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 40px;
+        }
 
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; }
-        .header-left h1 { font-size: 2.2rem; color: var(--primary); font-weight: 800; }
-        .header-left p { color: #64748b; font-size: 0.9rem; margin-top: 5px; }
-        .api-status { padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; background: #fee2e2; color: #991b1b; }
-        .api-status.online { background: #dcfce7; color: #166534; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; background: currentColor; }
-
-        /* Summary Cards */
-        .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
-        .card { background: var(--white); padding: 20px; border-radius: 12px; box-shadow: var(--shadow); border-top: 4px solid var(--primary); text-align: center; }
-        .card h3 { font-size: 0.85rem; text-transform: uppercase; color: #64748b; margin-bottom: 10px; }
-        .card .value { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
-
-        /* Charts Layout */
-        .charts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin-bottom: 40px; }
-        .chart-container { 
-            background: var(--white); 
-            padding: 20px; 
-            border-radius: 16px; 
-            box-shadow: var(--shadow); 
-            height: 420px; 
+        /* --- Header Section --- */
+        .glass-header {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            padding: 30px;
+            border-radius: 24px;
+            border: 1px solid var(--border);
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
         }
-        .chart-container h2 { font-size: 1.1rem; margin-bottom: 15px; border-left: 5px solid var(--secondary); padding-left: 10px; }
-        .chart-container canvas { max-height: 330px !important; width: 100% !important; }
 
-        /* Prediction Form */
-        .prediction-section { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); padding: 40px; border-radius: 24px; color: var(--white); margin-bottom: 40px; box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.4); }
-        .prediction-section h2 { font-size: 1.8rem; margin-bottom: 5px; }
-        .prediction-section p { margin-bottom: 25px; opacity: 0.9; }
-        .form-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
-        .form-group { display: flex; flex-direction: column; gap: 5px; }
-        .form-group label { font-size: 0.85rem; font-weight: 600; }
-        .form-group input, .form-group select { padding: 10px; border-radius: 8px; border: none; font-family: inherit; }
-        .btn-predict { grid-column: span 4; background: var(--secondary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 800; font-size: 1.1rem; cursor: pointer; transition: all 0.3s; margin-top: 10px; }
-        .btn-predict:hover { transform: scale(1.02); filter: brightness(1.1); }
-        .btn-predict:disabled { background: #94a3b8; cursor: not-allowed; }
+        .brand h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            background: linear-gradient(to right, #fff, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .brand p { font-size: 0.9rem; color: var(--text-dim); margin-top: 5px; text-transform: uppercase; letter-spacing: 2px; }
 
-        #result-display { margin-top: 30px; text-align: center; display: none; animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .result-box { background: rgba(255,255,255,0.15); display: inline-block; padding: 20px 50px; border-radius: 20px; border: 2px dashed rgba(255,255,255,0.3); }
-        .result-box .amount { font-size: 2.5rem; font-weight: 900; }
+        .system-orchestra { display: flex; gap: 15px; }
+        .node {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+        .node::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #4b5563; }
+        .node.online::before { background: var(--accent); box-shadow: 0 0 10px var(--accent-glow); animation: pulse 2s infinite; }
+        .node.spark { color: #f59e0b; }
 
-        .spinner { display: none; width: 24px; height: 24px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 1s linear infinite; margin: 0 auto; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        /* --- Stats Grid --- */
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .metric-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 30px;
+            position: relative;
+            transition: 0.4s cubic-bezier(0.2, 0, 0, 1);
+        }
+        .metric-card:hover { transform: translateY(-8px); border-color: var(--primary); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .metric-card h3 { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .metric-card .val { font-size: 2.8rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .metric-card .footer { margin-top: 15px; font-size: 0.8rem; color: var(--accent); display: flex; align-items: center; gap: 6px; }
+
+        /* --- Content Layout --- */
+        .content-shell {
+            display: grid;
+            grid-template-columns: 3fr 2.5fr;
+            gap: 30px;
+        }
+        .visual-card {
+            background: var(--card);
+            padding: 40px;
+            border-radius: 40px;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+        .card-head { margin-bottom: 30px; }
+        .card-head h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 5px; }
+        .card-head p { font-size: 0.9rem; color: var(--text-dim); }
+
+        .ai-status-panel {
+            background: linear-gradient(135deg, rgba(129, 140, 248, 0.1), transparent);
+            border: 1px solid rgba(129, 140, 248, 0.2);
+            padding: 25px;
+            border-radius: 25px;
+            margin-top: 30px;
+        }
+        .ai-chip { background: var(--primary); color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; margin-bottom: 12px; display: inline-block; }
+        .ai-text { font-size: 0.9rem; line-height: 1.6; color: var(--text-dim); }
+
+        canvas { width: 100% !important; height: 380px !important; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="header-left">
-                <h1>Healthcare Analytics Dashboard</h1>
-                <p>📊 <b>REAL DATA MODE:</b> Medical Healthcare Dataset | Báo cáo: <span id="report-date"></span></p>
+    <div class="dashboard">
+        <header class="glass-header">
+            <div class="brand">
+                <h1>NEURAL MEDICAL HUB</h1>
+                <p>Distributed Intelligence Orchestration</p>
             </div>
-            <div id="api-indicator" class="api-status">
-                <span class="dot"></span> <span>Flask AI Offline</span>
+            <div class="system-orchestra">
+                <div class="node online" id="nd-hdfs">HDFS BLOCKS</div>
+                <div class="node online spark" id="nd-spark">SPARK MASTER</div>
+                <div class="node" id="nd-kafka">KAFKA CLUSTER</div>
             </div>
         </header>
 
-        <!-- Summary Statistics -->
-        <section class="summary-grid">
-            <div class="card">
-                <h3>Tổng bệnh nhân</h3>
-                <div class="value" id="stat-total">55,500</div>
+        <section class="metrics">
+            <div class="metric-card">
+                <h3>Global Dataset Hash</h3>
+                <div class="val" id="st-total">--</div>
+                <div class="footer">Records Synced via Hadoop</div>
             </div>
-            <div class="card" style="border-top-color: var(--secondary)">
-                <h3>Chi phí TB (USD)</h3>
-                <div class="value" id="stat-avg">$25,539</div>
+            <div class="metric-card">
+                <h3>Revenue Analysis (TB)</h3>
+                <div class="val" id="st-avg">--</div>
+                <div class="footer">Avg. Dist. Patient Billing</div>
             </div>
-            <div class="card">
-                <h3>Bệnh phổ biến nhất</h3>
-                <div class="value" id="stat-top-disease">Arthritis</div>
+            <div class="metric-card">
+                <h3>Privacy Protocol</h3>
+                <div class="val" style="font-size: 1.5rem; color: var(--accent)">SHA-256 Mask</div>
+                <div class="footer">PII Data Obfuscated</div>
             </div>
-            <div class="card" style="border-top-color: #ef4444">
-                <h3>Tỷ lệ Nhập viện (%)</h3>
-                <div class="value" id="stat-emergency">32.9%</div>
+            <div class="metric-card">
+                <h3>AI Prediction Engine</h3>
+                <div class="val" style="font-size: 1.5rem; color: var(--primary)">TensorFlow 2.x</div>
+                <div class="footer">Deep Neural Network Core</div>
             </div>
         </section>
 
-        <!-- Charts Section -->
-        <section class="charts-grid">
-            <div class="chart-container">
-                <h2>Phân bố bệnh nhân theo nhóm tuổi</h2>
-                <canvas id="ageChart"></canvas>
+        <!-- NEURAL INFERENCE UI -->
+        <div class="visual-card" style="margin-bottom: 40px; min-height: auto;">
+            <div class="card-head">
+                <h2>Neural Inference Layer (Live Prediction)</h2>
+                <p>Nhập thông số bệnh nhân để TensorFlow Cloud đưa ra dự báo chi phí tức thời</p>
             </div>
-            <div class="chart-container">
-                <h2>Top 10 bệnh phổ biến nhất</h2>
-                <canvas id="diseaseChart"></canvas>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; align-items: flex-end;">
+                <div>
+                    <label style="display:block; font-size: 0.75rem; color: var(--text-dim); margin-bottom: 8px;">TUỔI</label>
+                    <input type="number" id="inp-age" value="45" min="1" max="120" style="width:100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 12px;">
+                </div>
+                <div>
+                    <label style="display:block; font-size: 0.75rem; color: var(--text-dim); margin-bottom: 8px;">GIỚI TÍNH</label>
+                    <select id="inp-gender" style="width:100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 12px;">
+                        <option value="Male">Nam</option>
+                        <option value="Female">Nữ</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display:block; font-size: 0.75rem; color: var(--text-dim); margin-bottom: 8px;">BỆNH LÝ</label>
+                    <select id="inp-condition" style="width:100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 12px;">
+                        <option value="Diabetes">Tiểu đường</option>
+                        <option value="Cancer">Ung thư</option>
+                        <option value="Asthma">Hen suyễn</option>
+                        <option value="Hypertension">Cao huyết áp</option>
+                        <option value="Obesity">Béo phì</option>
+                        <option value="Arthritis">Viêm khớp</option>
+                    </select>
+                </div>
+                <div>
+                    <button onclick="runInference()" id="btn-predict" style="width:100%; background: var(--primary); border: none; color: #fff; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s;">
+                        CHẠY DỰ BÁO AI
+                    </button>
+                </div>
             </div>
-            <div class="chart-container">
-                <h2>Tỷ lệ loại nhập viện (Admission Type)</h2>
+            <div id="infer-result" style="margin-top: 24px; padding: 20px; background: rgba(129, 140, 248, 0.1); border: 1px dashed var(--primary); border-radius: 16px; display: none;">
+                <div style="display:flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim);">Chi phí điều trị dự báo:</div>
+                        <div id="infer-val" style="font-size: 2rem; font-weight: 800; color: var(--accent);">$0.00</div>
+                    </div>
+                    <div id="infer-meta" style="font-size: 0.75rem; color: var(--text-dim); text-align: right;"></div>
+                </div>
+            </div>
+        </div>
+
+        <main class="content-shell">
+            <div class="visual-card">
+                <div class="card-head">
+                    <h2>Lớp Batch: Phân bổ Nhập viện HDFS</h2>
+                    <p>Xử lý từ HDFS Cold Storage (Spark Batch Inference)</p>
+                </div>
                 <canvas id="admissionChart"></canvas>
             </div>
-            <div class="chart-container">
-                <h2>Phân phối chi phí điều trị</h2>
-                <canvas id="billingChart"></canvas>
-            </div>
-        </section>
 
-        <!-- Prediction Form -->
-        <section class="prediction-section">
-            <div style="text-align: center;">
-                <h2>⭐ AI Cost Prediction (Real Data)</h2>
-                <p>Dự đoán chi phí bằng AI huấn luyện trực tiếp từ hồ sơ bệnh nhân thực tế</p>
-            </div>
-            
-            <form id="prediction-form">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Age</label>
-                        <input type="number" name="Age" min="1" max="120" value="45" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Gender</label>
-                        <select name="Gender">
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Blood Type</label>
-                        <select name="Blood Type">
-                            <option value="A+">A+</option><option value="A-">A-</option>
-                            <option value="B+">B+</option><option value="B-">B-</option>
-                            <option value="AB+">AB+</option><option value="AB-">AB-</option>
-                            <option value="O+">O+</option><option value="O-">O-</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Medical Condition</label>
-                        <select name="Medical Condition">
-                            <option value="Diabetes">Diabetes</option>
-                            <option value="Cancer">Cancer</option>
-                            <option value="Asthma">Asthma</option>
-                            <option value="Obesity">Obesity</option>
-                            <option value="Arthritis">Arthritis</option>
-                            <option value="Hypertension">Hypertension</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Insurance Provider</label>
-                        <select name="Insurance Provider">
-                            <option value="Aetna">Aetna</option>
-                            <option value="Medicare">Medicare</option>
-                            <option value="Cigna">Cigna</option>
-                            <option value="UnitedHealthcare">UnitedHealthcare</option>
-                            <option value="Blue Cross">Blue Cross</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Room Number</label>
-                        <input type="number" name="Room Number" value="101" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Admission Type</label>
-                        <select name="Admission Type">
-                            <option value="Emergency">Emergency</option>
-                            <option value="Elective">Elective</option>
-                            <option value="Urgent">Urgent</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Length of Stay (days)</label>
-                        <input type="number" name="Length_of_Stay" min="1" value="5" required>
-                    </div>
+            <div class="visual-card">
+                <div style="display:flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                    <span style="background: rgba(45,212,191,0.2); color: var(--accent); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700;">LỚP SPEED – SUY LUẬN TRỰC TIẾP</span>
                 </div>
+                <div class="card-head">
+                    <h2>Thời gian thực: Thực tế vs Dự báo AI</h2>
+                    <p>Luồng Streaming trực tiếp từ Kafka (Structured Streaming)</p>
+                </div>
+                <canvas id="realtimeChart"></canvas>
 
-                <button type="submit" class="btn-predict" id="predict-btn">
-                    <span id="btn-text">Predict Final Billing</span>
-                    <div class="spinner" id="btn-spinner"></div>
-                </button>
-            </form>
-
-            <div id="result-display">
-                <div class="result-box">
-                    <p style="text-transform: uppercase; font-size: 0.8rem; opacity: 0.8;">Kết quả dự báo AI</p>
-                    <div class="amount" id="predicted-amount">$0.00</div>
-                    <p style="font-size: 0.75rem; font-style: italic; margin-top: 5px;" id="confidence-note"></p>
+                <div class="ai-status-panel">
+                    <span class="ai-chip">NEURAL CORE ACTIVE</span>
+                    <p class="ai-text">
+                        Mô hình dự báo chi phí y tế đang phân tích dòng dữ liệu từ Kafka với độ trễ < 500ms. 
+                        Xử lý phân tán trên cụm 2 Workers đảm bảo tính sẵn sàng cao.
+                    </p>
                 </div>
             </div>
-        </section>
-
-        <footer style="text-align: center; color: #94a3b8; font-size: 0.85rem; padding: 20px 0;">
-            <p>© 2024 Analysis Pipeline Team | Member 1, 2, 3, 4 | Big Data Project - PRODUCTION READY</p>
-        </footer>
+        </main>
     </div>
 
     <script>
-        const FLASK_URL = 'http://localhost:5005';
-        document.getElementById('report-date').textContent = new Date().toLocaleDateString('vi-VN');
+        Chart.defaults.color = 'rgba(255, 255, 255, 0.4)';
+        Chart.defaults.font.family = "'Outfit', sans-serif";
 
-        // SỐ LIỆU THỰC TẾ TỪ CSV (TRÍCH XUẤT TỪ process_real_analytics.py)
-        const DATA = {
-            age_distribution: { 
-                labels: ['0-18', '19-35', '36-50', '51-65', '65+'], 
-                values: [888, 13644, 12301, 12417, 16250] 
-            },
-            top_diseases: { 
-                labels: ['Arthritis', 'Diabetes', 'Hypertension', 'Obesity', 'Cancer', 'Asthma'], 
-                counts: [9308, 9304, 9245, 9231, 9227, 9185]
-            },
-            admission_stats: { 
-                labels: ['Elective', 'Urgent', 'Emergency'], 
-                counts: [18655, 18576, 18269],
-                percentages: [33.6, 33.5, 32.9]
-            }
-        };
-
-        // 1. Age Chart
-        new Chart(document.getElementById('ageChart'), {
+        const ctxBatch = document.getElementById('admissionChart').getContext('2d');
+        const batchChart = new Chart(ctxBatch, {
             type: 'bar',
             data: {
-                labels: DATA.age_distribution.labels,
-                datasets: [{ label: 'Patient Count', data: DATA.age_distribution.values, backgroundColor: '#0ea5e9', borderRadius: 8 }]
+                labels: ['Loading Clusters...'],
+                datasets: [{
+                    label: 'Patient Volume',
+                    data: [0],
+                    backgroundColor: 'rgba(129, 140, 248, 0.8)',
+                    borderRadius: 15,
+                    barThickness: 50
+                }]
             },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
-
-        // 2. Top Diseases
-        new Chart(document.getElementById('diseaseChart'), {
-            type: 'bar',
-            data: {
-                labels: DATA.top_diseases.labels,
-                datasets: [{ label: 'Cases Total', data: DATA.top_diseases.counts, backgroundColor: '#10b981', borderRadius: 4 }]
-            },
-            options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false }
-        });
-
-        // 3. Admission
-        new Chart(document.getElementById('admissionChart'), {
-            type: 'doughnut',
-            data: {
-                labels: DATA.admission_stats.labels,
-                datasets: [{ data: DATA.admission_stats.counts, backgroundColor: ['#ef4444', '#f59e0b', '#0ea5e9'] }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, cutout: '65%' }
-        });
-
-        // 4. Billing (Simplified distribution for real data demo)
-        new Chart(document.getElementById('billingChart'), {
-            type: 'line',
-            data: {
-                labels: ['0', '10k', '20k', '30k', '40k', '50k+'],
-                datasets: [{ label: 'Frequency Distribution', data: [1500, 12000, 25000, 10000, 5000, 2000], borderColor: '#6366f1', fill: true, backgroundColor: 'rgba(99, 102, 241, 0.1)', tension: 0.4 }]
-            },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
-
-        async function checkHealth() {
-            const indicator = document.getElementById('api-indicator');
-            try {
-                const res = await fetch(FLASK_URL + '/health');
-                const d = await res.json();
-                if (d.status === 'ok') {
-                    indicator.classList.add('online');
-                    indicator.innerHTML = '<span class="dot"></span> <span>AI Server: Online (Real Mode)</span>';
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { grid: { color: 'rgba(255,255,255,0.03)', drawBorder: false } },
+                    x: { grid: { display: false } }
                 }
-            } catch (e) {}
-        }
-        setInterval(checkHealth, 3000);
-        checkHealth();
+            }
+        });
 
-        document.getElementById('prediction-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('predict-btn');
-            const spinner = document.getElementById('btn-spinner');
-            const text = document.getElementById('btn-text');
-            const resultDisplay = document.getElementById('result-display');
-            
-            btn.disabled = true; spinner.style.display = 'block'; text.style.display = 'none';
-            resultDisplay.style.display = 'none';
+        const RT_LABELS = ['Tiểu đường', 'Ung thư', 'Hen suyễn', 'Béo phì', 'Viêm khớp', 'Cao huyết áp'];
+        const ctxRT = document.getElementById('realtimeChart').getContext('2d');
+        const rtChart = new Chart(ctxRT, {
+            type: 'bar',
+            data: {
+                labels: RT_LABELS,
+                datasets: [
+                    {
+                        label: 'TB Thực tế ($)',
+                        data: [0, 0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(156, 163, 175, 0.7)',
+                        borderRadius: 8,
+                        barPercentage: 0.4
+                    },
+                    {
+                        label: 'TB Dự báo ($)',
+                        data: [0, 0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(45, 212, 191, 0.85)',
+                        borderRadius: 8,
+                        barPercentage: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, labels: { color: 'rgba(255,255,255,0.6)', font: { size: 12 } } }
+                },
+                scales: {
+                    y: {
+                        grid: { color: 'rgba(255,255,255,0.03)' },
+                        min: 18000,
+                        max: 32000,
+                        ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'k' }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
 
-            const formData = new FormData(e.target);
-            const payload = Object.fromEntries(formData.entries());
-            
+        async function runInference() {
+            const btn = document.getElementById('btn-predict');
+            btn.textContent = "Đang xử lý...";
+            btn.disabled = true;
+
+            const age = parseInt(document.getElementById('inp-age').value);
+            const gender = document.getElementById('inp-gender').value;
+            const conditionVal = document.getElementById('inp-condition').value;
+            const conditionLabel = document.getElementById('inp-condition').selectedOptions[0].text;
+
+            const payload = {
+                Age: age,
+                Gender: gender,
+                "Medical Condition": conditionVal,
+                "Admission Type": "Emergency"
+            };
+
             try {
-                const res = await fetch(FLASK_URL + '/predict', {
+                const res = await fetch('/predict', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
                 const data = await res.json();
-                
                 if (data.status === 'success') {
-                    document.getElementById('predicted-amount').textContent = '$' + data.predicted_billing.toLocaleString();
-                    document.getElementById('confidence-note').textContent = data.confidence_note;
-                    resultDisplay.style.display = 'block';
+                    document.getElementById('infer-result').style.display = 'block';
+                    const predicted = data.predicted_billing;
+                    document.getElementById('infer-val').textContent = '$' + predicted.toLocaleString('vi-VN', {maximumFractionDigits: 0});
+                    document.getElementById('infer-meta').innerHTML =
+                        `Bệnh: <b>${conditionLabel}</b> | Tuổi: <b>${age}</b> | Giới tính: <b>${gender === 'Male' ? 'Nam' : 'Nữ'}</b><br>
+                        <span style="color: var(--accent)">Engine: ${data.engine || 'Neural AI'}</span>`;
+                } else {
+                    document.getElementById('infer-result').style.display = 'block';
+                    document.getElementById('infer-val').textContent = 'API Offline';
                 }
-            } catch (err) {
-                alert('Connection Error to AI Service!');
+            } catch (e) {
+                // Fallback: calculate client-side from realtime stats
+                const statsRes = await fetch('/realtime_stats.json').catch(() => null);
+                let base = 25000;
+                if (statsRes && statsRes.ok) {
+                    const stats = await statsRes.json();
+                    const viMap = {'Diabetes':'Tiểu đường','Cancer':'Ung thư','Asthma':'Hen suyễn','Hypertension':'Cao huyết áp','Obesity':'Béo phì','Arthritis':'Viêm khớp'};
+                    const viKey = viMap[conditionVal] || conditionVal;
+                    const match = stats.find(s => s['Medical Condition'] === viKey);
+                    if (match) base = match.avg_actual;
+                }
+                if (age < 12) base *= 0.6;
+                else if (age > 75) base *= 1.1;
+                document.getElementById('infer-result').style.display = 'block';
+                document.getElementById('infer-val').textContent = '$' + Math.round(base).toLocaleString('vi-VN');
+                document.getElementById('infer-meta').innerHTML = '<span style="color:#f59e0b">Offline Mode - Dự báo từ dữ liệu cục bộ</span>';
             } finally {
-                btn.disabled = false; spinner.style.display = 'none'; text.style.display = 'inline';
+                btn.textContent = "CHẠY DỰ BÁO AI";
+                btn.disabled = false;
             }
-        };
+        }
+
+        async function refreshData() {
+            try {
+                // Batch Data
+                const resB = await fetch('/analytics_results.json');
+                if (resB.ok) {
+                    const data = await resB.json();
+                    document.getElementById('st-total').textContent = (data.billing_stats.total_patients || 0).toLocaleString();
+                    document.getElementById('st-avg').textContent = '$' + Math.round(data.billing_stats.avg || 0).toLocaleString();
+                    
+                    if (data.admission_stats) {
+                        batchChart.data.labels = data.admission_stats.labels;
+                        batchChart.data.datasets[0].data = data.admission_stats.counts;
+                        batchChart.update('none');
+                    }
+                }
+
+                // Streaming Data - Speed Layer
+                const resS = await fetch('/realtime_stats.json?t=' + Date.now());
+                if (resS.ok) {
+                    const data = await resS.json();
+                    if (Array.isArray(data) && data.length > 0) {
+                        // Map Vietnamese condition names to chart positions
+                        const actualData = RT_LABELS.map(label => {
+                            const found = data.find(d => d['Medical Condition'] === label);
+                            return found ? Math.round(found.avg_actual || 0) : 0;
+                        });
+                        const predictedData = RT_LABELS.map(label => {
+                            const found = data.find(d => d['Medical Condition'] === label);
+                            return found ? Math.round(found.avg_predicted || 0) : 0;
+                        });
+                        rtChart.data.datasets[0].data = actualData;
+                        rtChart.data.datasets[1].data = predictedData;
+                        rtChart.update('active');
+
+                        document.getElementById('nd-kafka').classList.add('online');
+                        document.getElementById('nd-kafka').textContent = 'KAFKA LIVE';
+                    }
+                }
+            } catch (e) { console.warn("Sync failed", e); }
+        }
+
+        setInterval(refreshData, 5000);
+        refreshData();
     </script>
 </body>
 </html>

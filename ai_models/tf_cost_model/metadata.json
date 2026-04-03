@@ -1,0 +1,20 @@
+{
+    "gender_classes": [
+        "Female",
+        "Male"
+    ],
+    "condition_classes": [
+        "Arthritis",
+        "Asthma",
+        "Cancer",
+        "Diabetes",
+        "Hypertension",
+        "Obesity"
+    ],
+    "admission_classes": [
+        "Elective",
+        "Emergency",
+        "Urgent"
+    ],
+    "engine": "TensorFlow 2.x (Distributed Simulation)"
+}

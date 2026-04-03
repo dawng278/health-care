@@ -1,17 +1,17 @@
 {
     "labels": [
         "Elective",
-        "Urgent",
-        "Emergency"
+        "Emergency",
+        "Urgent"
     ],
     "counts": [
         18655,
-        18576,
-        18269
+        18269,
+        18576
     ],
     "percentages": [
         33.6,
-        33.5,
-        32.9
+        32.9,
+        33.5
     ]
 }

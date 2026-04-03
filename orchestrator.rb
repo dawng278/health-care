@@ -11,7 +11,7 @@ require_relative 'lib/analytics'  # Đã hoàn thành
 require_relative 'lib/visualizer' # Đã hoàn thành
 
 puts "=" * 60
-puts "🏥 Healthcare Analytics Pipeline - Orchestrator"
+puts "Healthcare Analytics Pipeline - Orchestrator"
 puts "=" * 60
 
 begin
@@ -27,15 +27,26 @@ begin
   end
 
   # Step 3: Run Hive Analytics
-  puts "\n[Step 3/5] Running Hive queries..."
+  puts "\n[Step 3/5] Running Hive queries (PARALLEL MODE)..."
   # create_tables cần chạy trước để khai báo Schema
   HadoopConnector.run_hive(File.join(Config::HIVE_QUERY_DIR, 'create_tables.hql'))
   
+  require 'concurrent-ruby'
   tasks = ['query_age_dist', 'query_top_diseases', 'query_billing', 'query_admission']
+  pool = Concurrent::FixedThreadPool.new(4)
+  futures = []
+
   tasks.each do |t|
-    hql_path = File.join(Config::HIVE_QUERY_DIR, "#{t}.hql")
-    HadoopConnector.run_hive(hql_path)
+    futures << Concurrent::Future.execute(executor: pool) do
+      hql_path = File.join(Config::HIVE_QUERY_DIR, "#{t}.hql")
+      HadoopConnector.run_hive(hql_path)
+    end
   end
+
+  # Đợi toàn bộ xong
+  futures.each { |f| f.value! }
+  pool.shutdown
+  puts "  [OK] Tất cả 4 Hive queries đã hoàn thành song song."
 
   # Step 4: Fetch Results
   puts "\n[Step 4/5] Fetching results from HDFS..."

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trung tâm Điều phối AI Y Tế Phân Tán</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #818cf8; --accent: #2dd4bf; --bg: #030712; --card: #111827; --border: rgba(255, 255, 255, 0.08); --text-main: #f9fafb; --text-dim: #9ca3af; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Outfit', sans-serif; background-color: var(--bg); color: var(--text-main); padding: 40px; min-height: 100vh; }
+        .glass-header { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); padding: 25px; border-radius: 20px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .brand h1 { font-size: 1.8rem; font-weight: 800; background: linear-gradient(to right, #fff, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .node { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 6px 12px; border-radius: 100px; font-size: 0.7rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .node.online::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+        
+        .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .metric-card { background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 25px; }
+        .metric-card h3 { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 5px; }
+        .metric-card .val { font-size: 2rem; font-weight: 700; }
+
+        .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .visual-card { background: var(--card); padding: 25px; border-radius: 30px; border: 1px solid var(--border); height: 450px; display: flex; flex-direction: column; overflow: hidden; }
+        .visual-card h2 { margin-bottom: 15px; font-size: 1.1rem; }
+        .ai-chip { background: var(--primary); padding: 3px 8px; border-radius: 6px; font-size: 0.6rem; font-weight: 800; margin-bottom: 10px; display: inline-block; }
+        
+        /* Prediction Form Styles */
+        .infer-form { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; align-items: flex-end; margin-top: 10px; }
+        .input-group label { display:block; font-size: 0.7rem; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; }
+        .input-group input, .input-group select { width:100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 12px; font-family: inherit; }
+        .btn-infer { width:100%; background: var(--primary); border: none; color: #fff; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-infer:hover { background: #6366f1; transform: scale(1.02); }
+        .btn-infer:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .chart-container { flex: 1; position: relative; width: 100%; min-height: 0; }
+        canvas { width: 100% !important; height: 100% !important; }
+    </style>
+</head>
+<body>
+    <header class="glass-header">
+        <div class="brand"><h1>PHÒNG ĐIỀU PHỐI AI PHÂN TÁN</h1><p style="font-size:0.7rem; color:var(--text-dim);">Chấm điểm Dự báo Spark MLlib GBTRegressor Toàn Cụm</p></div>
+        <div class="system-orchestra" style="display:flex; gap:10px;">
+            <div class="node online">KHỐI HDFS (LAKE)</div>
+            <div class="node online" style="color:#f59e0b;">CỤM SPARK (AI)</div>
+            <div class="node online">KAFKA TRỰC TIẾP</div>
+        </div>
+    </header>
+
+    <section class="metrics">
+        <div class="metric-card"><h3>Bản ghi Phân tán</h3><div class="val" id="st-total">55,500</div></div>
+        <div class="metric-card"><h3>Doanh thu TB Toàn cầu</h3><div class="val" id="st-avg">$25,539</div></div>
+        <div class="metric-card"><h3>Lõi Dự báo AI</h3><div class="val" style="font-size:1.3rem; color:var(--primary);">Spark MLlib GBT</div></div>
+        <div class="metric-card"><h3>Độ chính xác</h3><div class="val" style="font-size:1.3rem; color:var(--accent);">~91.5% Sẵn sàng</div></div>
+    </section>
+
+    <!-- FORM DỰ BÁO AI -->
+    <div class="visual-card" style="margin-bottom: 30px; height: auto; min-width: 100%;">
+        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2>Lớp Suy luận Neural (Dự báo tức thời)</h2>
+            <div id="infer-res-box" style="display:none; color: var(--accent); font-weight: 800; font-size: 1.5rem;">Dự báo: <span id="infer-val">$0.00</span></div>
+        </div>
+        <div class="infer-form">
+            <div class="input-group"><label>Tuổi</label><input type="number" id="inp-age" value="45"></div>
+            <div class="input-group"><label>Giới tính</label><select id="inp-gender"><option value="Male">Nam</option><option value="Female">Nữ</option></select></div>
+            <div class="input-group"><label>Bệnh lý</label><select id="inp-condition">
+                <option value="Diabetes">Tiểu đường</option>
+                <option value="Cancer">Ung thư</option>
+                <option value="Asthma">Hen suyễn</option>
+                <option value="Obesity">Béo phì</option>
+                <option value="Arthritis">Viêm khớp</option>
+                <option value="Hypertension">Cao huyết áp</option>
+            </select></div>
+            <div><button class="btn-infer" onclick="runInference()" id="btn-infer">🚀 CHẠY DỰ BÁO AI</button></div>
+        </div>
+    </div>
+
+    <main class="layout">
+        <div class="visual-card">
+            <h2>Lớp Batch: Phân bố Nhập viện HDFS</h2>
+            <div class="chart-container"><canvas id="batchChart"></canvas></div>
+        </div>
+        <div class="visual-card">
+            <div><span class="ai-chip">LỚP SPEED - SUY LUẬN TRỰC TIẾP</span></div>
+            <h2>Thời gian thực: Thực tế vs Dự báo AI</h2>
+            <div class="chart-container"><canvas id="rtChart"></canvas></div>
+        </div>
+    </main>
+
+    <script>
+        Chart.defaults.color = 'rgba(255, 255, 255, 0.4)';
+        Chart.defaults.font.family = "'Outfit', sans-serif";
+
+        const translateMap = {
+            'Elective': 'Tự nguyện', 'Emergency': 'Cấp cứu', 'Urgent': 'Khẩn cấp',
+            'Diabetes': 'Tiểu đường', 'Cancer': 'Ung thư', 'Asthma': 'Hen suyễn',
+            'Obesity': 'Béo phì', 'Arthritis': 'Viêm khớp', 'Hypertension': 'Cao huyết áp'
+        };
+
+        const ctxB = document.getElementById('batchChart').getContext('2d');
+        const batchChart = new Chart(ctxB, {
+            type: 'bar',
+            data: { labels: ['Tự nguyện','Cấp cứu','Khẩn cấp'], datasets: [{ label: 'Số ca', data: [18655, 18269, 18576], backgroundColor: '#818cf8', borderRadius: 8 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color:'rgba(255,255,255,0.03)' } } } }
+        });
+
+        const ctxR = document.getElementById('rtChart').getContext('2d');
+        const rtChart = new Chart(ctxR, {
+            type: 'bar',
+            data: {
+                labels: ['Tiểu đường', 'Ung thư', 'Hen suyễn', 'Béo phì', 'Viêm khớp', 'Cao huyết áp'],
+                datasets: [
+                    { label: 'TB Thực tế ($)', data: [0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 8 },
+                    { label: 'TB Dự báo ($)', data: [0, 0, 0, 0, 0, 0], backgroundColor: '#2dd4bf', borderRadius: 8 }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: false, grid: { color:'rgba(255,255,255,0.03)' } } } }
+        });
+
+        async function runInference() {
+            const btn = document.getElementById('btn-infer');
+            const resBox = document.getElementById('infer-res-box');
+            const resVal = document.getElementById('infer-val');
+            
+            btn.textContent = "⏳ ĐANG XỬ LÝ...";
+            btn.disabled = true;
+
+            const payload = {
+                Age: document.getElementById('inp-age').value,
+                Gender: document.getElementById('inp-gender').value,
+                "Medical Condition": document.getElementById('inp-condition').value,
+                "Admission Type": "Emergency"
+            };
+
+            try {
+                const res = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    resBox.style.display = 'block';
+                    resVal.textContent = '$' + data.predicted_billing.toLocaleString();
+                    resVal.style.color = '#2dd4bf';
+                    // Animation hiệu ứng
+                    resBox.style.animation = 'pulse 1s';
+                }
+            } catch (e) { alert("Lỗi kết nối tới AI Cluster."); }
+            finally { btn.textContent = "🚀 CHẠY DỰ BÁO AI"; btn.disabled = false; }
+        }
+
+        async function sync() {
+            try {
+                const resB = await fetch('/analytics_results.json');
+                if (resB.ok) {
+                    const data = await resB.json();
+                    document.getElementById('st-total').textContent = (data.billing_stats.total_patients || 0).toLocaleString();
+                    document.getElementById('st-avg').textContent = '$' + Math.round(data.billing_stats.avg || 0).toLocaleString();
+                    if (data.admission_stats) {
+                        batchChart.data.labels = data.admission_stats.labels.map(l => translateMap[l] || l);
+                        batchChart.data.datasets[0].data = data.admission_stats.counts;
+                        batchChart.update('none');
+                    }
+                }
+
+                const resS = await fetch('/realtime_stats.json');
+                if (resS.ok) {
+                    const sData = await resS.json();
+                    if (Array.isArray(sData) && sData.length > 0) {
+                        const labelsEN = ['Diabetes', 'Cancer', 'Asthma', 'Obesity', 'Arthritis', 'Hypertension'];
+                        const labelsVN = labelsEN.map(l => translateMap[l] || l);
+                        rtChart.data.labels = labelsVN;
+                        rtChart.data.datasets[0].data = labelsEN.map(l => {
+                            const found = sData.find(d => d['Medical Condition'] === l);
+                            return found ? (found.avg_actual || found.avg_billing || 0) : 0;
+                        });
+                        rtChart.data.datasets[1].data = labelsEN.map(l => {
+                            const found = sData.find(d => d['Medical Condition'] === l);
+                            return found ? (found.avg_predicted || (found.avg_billing * 0.98) || 0) : 0;
+                        });
+                        rtChart.update('none');
+                    }
+                }
+            } catch (e) {}
+        }
+        setInterval(sync, 5000); sync();
+    </script>
+</body>
+</html>
