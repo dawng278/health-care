@@ -16,18 +16,28 @@ producer = KafkaProducer(
     value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 
-conditions = ['Diabetes', 'Cancer', 'Asthma', 'Obesity', 'Arthritis', 'Hypertension']
+conditions = {
+    'Diabetes': (10000, 30000), 
+    'Cancer': (45000, 100000), 
+    'Asthma': (4000, 12000), 
+    'Obesity': (8000, 25000), 
+    'Arthritis': (12000, 35000), 
+    'Hypertension': (6000, 20000)
+}
 admission_types = ['Emergency', 'Elective', 'Urgent']
 
 print("Secure Kafka Producer (PII Protected) successfully started...")
 
 while True:
+    condition_name = random.choice(list(conditions.keys()))
+    min_cost, max_cost = conditions[condition_name]
+    
     patient = {
         "Age": random.randint(18, 90),
         "Gender": random.choice(["Male", "Female"]),
-        "Medical Condition": random.choice(conditions),
+        "Medical Condition": condition_name,
         "Admission Type": random.choice(admission_types),
-        "Billing Amount": round(random.uniform(5000, 45000), 2),
+        "Billing Amount": round(random.uniform(min_cost, max_cost), 2),
         "Blood Type": random.choice(['A+','O-','B+','AB+']),
         "Insurance Provider": random.choice(['Medicare','Aetna','Cigna']),
         "Room Number": random.randint(100, 500),

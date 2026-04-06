@@ -71,7 +71,7 @@
                 <option value="Arthritis">Viêm khớp</option>
                 <option value="Hypertension">Cao huyết áp</option>
             </select></div>
-            <div><button class="btn-infer" onclick="runInference()" id="btn-infer">🚀 CHẠY DỰ BÁO AI</button></div>
+            <div><button class="btn-infer" onclick="runInference()" id="btn-infer">CHẠY DỰ BÁO AI</button></div>
         </div>
     </div>
 
@@ -122,7 +122,7 @@
             const resBox = document.getElementById('infer-res-box');
             const resVal = document.getElementById('infer-val');
             
-            btn.textContent = "⏳ ĐANG XỬ LÝ...";
+            btn.textContent = "ĐANG XỬ LÝ...";
             btn.disabled = true;
 
             const payload = {
@@ -147,7 +147,7 @@
                     resBox.style.animation = 'pulse 1s';
                 }
             } catch (e) { alert("Lỗi kết nối tới AI Cluster."); }
-            finally { btn.textContent = "🚀 CHẠY DỰ BÁO AI"; btn.disabled = false; }
+            finally { btn.textContent = "CHẠY DỰ BÁO AI"; btn.disabled = false; }
         }
 
         async function sync() {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Healthcare Neural Analytics</title>
+    <title>Phân tích Y tế Thông minh Neural</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -56,6 +56,7 @@
             letter-spacing: -2px;
             background: linear-gradient(to right, #fff, #818cf8);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         .brand p { font-size: 0.9rem; color: var(--text-dim); margin-top: 5px; text-transform: uppercase; letter-spacing: 2px; }
@@ -102,8 +103,8 @@
         /* --- Content Layout --- */
         .content-shell {
             display: grid;
-            grid-template-columns: 3fr 2.5fr;
-            gap: 30px;
+            grid-template-columns: 1fr;
+            gap: 40px;
         }
         .visual-card {
             background: var(--card);
@@ -113,8 +114,8 @@
             position: relative;
         }
         .card-head { margin-bottom: 30px; }
-        .card-head h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 5px; }
-        .card-head p { font-size: 0.9rem; color: var(--text-dim); }
+        .card-head h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
+        .card-head p { font-size: 1.1rem; color: var(--text-dim); }
 
         .ai-status-panel {
             background: linear-gradient(135deg, rgba(129, 140, 248, 0.1), transparent);
@@ -126,50 +127,50 @@
         .ai-chip { background: var(--primary); color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; margin-bottom: 12px; display: inline-block; }
         .ai-text { font-size: 0.9rem; line-height: 1.6; color: var(--text-dim); }
 
-        canvas { width: 100% !important; height: 380px !important; }
+        canvas { width: 100% !important; height: 550px !important; }
     </style>
 </head>
 <body>
     <div class="dashboard">
         <header class="glass-header">
             <div class="brand">
-                <h1>NEURAL MEDICAL HUB</h1>
-                <p>Distributed Intelligence Orchestration</p>
+                <h1>TRUNG TÂM Y TẾ NEURAL</h1>
+                <p>Điều phối Trí tuệ Nhân tạo Phân tán</p>
             </div>
             <div class="system-orchestra">
-                <div class="node online" id="nd-hdfs">HDFS BLOCKS</div>
-                <div class="node online spark" id="nd-spark">SPARK MASTER</div>
-                <div class="node" id="nd-kafka">KAFKA CLUSTER</div>
+                <div class="node online" id="nd-hdfs">KHỐI DỮ LIỆU HDFS</div>
+                <div class="node online spark" id="nd-spark">ĐIỀU KHIỂN SPARK</div>
+                <div class="node" id="nd-kafka">KAFKA TRỰC TIẾP</div>
             </div>
         </header>
 
         <section class="metrics">
             <div class="metric-card">
-                <h3>Global Dataset Hash</h3>
+                <h3>Mã băm Dữ liệu Toàn cầu</h3>
                 <div class="val" id="st-total">--</div>
-                <div class="footer">Records Synced via Hadoop</div>
+                <div class="footer">Bản ghi Đồng bộ qua Hadoop</div>
             </div>
             <div class="metric-card">
-                <h3>Revenue Analysis (TB)</h3>
+                <h3>Phân tích Doanh thu (TB)</h3>
                 <div class="val" id="st-avg">--</div>
-                <div class="footer">Avg. Dist. Patient Billing</div>
+                <div class="footer">Phí điều trị Trung bình Phân tán</div>
             </div>
             <div class="metric-card">
-                <h3>Privacy Protocol</h3>
-                <div class="val" style="font-size: 1.5rem; color: var(--accent)">SHA-256 Mask</div>
-                <div class="footer">PII Data Obfuscated</div>
+                <h3>Giao thức Bảo mật</h3>
+                <div class="val" style="font-size: 1.5rem; color: var(--accent)">Mặt nạ SHA-256</div>
+                <div class="footer">Dữ liệu Cá nhân đã Mã hóa</div>
             </div>
             <div class="metric-card">
-                <h3>AI Prediction Engine</h3>
+                <h3>Hệ thống Dự báo AI</h3>
                 <div class="val" style="font-size: 1.5rem; color: var(--primary)">TensorFlow 2.x</div>
-                <div class="footer">Deep Neural Network Core</div>
+                <div class="footer">Lõi Mạng Nơ-ron sâu</div>
             </div>
         </section>
 
         <!-- NEURAL INFERENCE UI -->
         <div class="visual-card" style="margin-bottom: 40px; min-height: auto;">
             <div class="card-head">
-                <h2>Neural Inference Layer (Live Prediction)</h2>
+                <h2>Tầng Suy luận Nơ-ron (Dự báo Trực tiếp)</h2>
                 <p>Nhập thông số bệnh nhân để TensorFlow Cloud đưa ra dự báo chi phí tức thời</p>
             </div>
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; align-items: flex-end;">
@@ -232,7 +233,7 @@
                 <canvas id="realtimeChart"></canvas>
 
                 <div class="ai-status-panel">
-                    <span class="ai-chip">NEURAL CORE ACTIVE</span>
+                    <span class="ai-chip">LÕI NEURAL ĐANG HOẠT ĐỘNG</span>
                     <p class="ai-text">
                         Mô hình dự báo chi phí y tế đang phân tích dòng dữ liệu từ Kafka với độ trễ < 500ms. 
                         Xử lý phân tán trên cụm 2 Workers đảm bảo tính sẵn sàng cao.
@@ -250,9 +251,9 @@
         const batchChart = new Chart(ctxBatch, {
             type: 'bar',
             data: {
-                labels: ['Loading Clusters...'],
+                labels: ['Đang tải hệ thống...'],
                 datasets: [{
-                    label: 'Patient Volume',
+                    label: 'Số lượng Bệnh nhân',
                     data: [0],
                     backgroundColor: 'rgba(129, 140, 248, 0.8)',
                     borderRadius: 15,
@@ -264,8 +265,17 @@
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
-                    y: { grid: { color: 'rgba(255,255,255,0.03)', drawBorder: false } },
-                    x: { grid: { display: false } }
+                    y: { 
+                        grid: { color: 'rgba(255,255,255,0.03)', drawBorder: false },
+                        ticks: { 
+                            color: 'rgba(255,255,255,0.7)',
+                            font: { size: 16, weight: '600' }
+                        }
+                    },
+                    x: { 
+                        grid: { display: false },
+                        ticks: { color: 'rgba(255,255,255,0.9)', font: { size: 17, weight: '800' } }
+                    }
                 }
             }
         });
@@ -297,16 +307,22 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { display: true, labels: { color: 'rgba(255,255,255,0.6)', font: { size: 12 } } }
+                    legend: { display: true, labels: { color: 'rgba(255,255,255,0.8)', font: { size: 15, weight: '700' } } }
                 },
                 scales: {
                     y: {
                         grid: { color: 'rgba(255,255,255,0.03)' },
-                        min: 18000,
-                        max: 32000,
-                        ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'k' }
+                        beginAtZero: true,
+                        ticks: { 
+                            color: 'rgba(255,255,255,0.7)',
+                            font: { size: 16, weight: '600' },
+                            callback: v => '$' + (v/1000).toFixed(0) + 'k' 
+                        }
                     },
-                    x: { grid: { display: false } }
+                    x: { 
+                        grid: { display: false },
+                        ticks: { color: 'rgba(255,255,255,0.9)', font: { size: 18, weight: '800' } }
+                    }
                 }
             }
         });
@@ -341,27 +357,45 @@
                     document.getElementById('infer-val').textContent = '$' + predicted.toLocaleString('vi-VN', {maximumFractionDigits: 0});
                     document.getElementById('infer-meta').innerHTML =
                         `Bệnh: <b>${conditionLabel}</b> | Tuổi: <b>${age}</b> | Giới tính: <b>${gender === 'Male' ? 'Nam' : 'Nữ'}</b><br>
-                        <span style="color: var(--accent)">Engine: ${data.engine || 'Neural AI'}</span>`;
+                        <span style="color: var(--accent)">Động cơ: ${data.engine || 'Trí tuệ Nhân tạo Neural'}</span>`;
                 } else {
                     document.getElementById('infer-result').style.display = 'block';
-                    document.getElementById('infer-val').textContent = 'API Offline';
+                    document.getElementById('infer-val').textContent = 'API Ngoại tuyến';
                 }
             } catch (e) {
-                // Fallback: calculate client-side from realtime stats
+                // Fallback: calculate client-side from realtime stats with smarter defaults
                 const statsRes = await fetch('/realtime_stats.json').catch(() => null);
-                let base = 25000;
+                
+                // Fallback Map (mimicking backend expert layer)
+                const fallbackMap = {
+                    'Cancer': 75000,
+                    'Diabetes': 22000,
+                    'Asthma': 9000,
+                    'Obesity': 17000,
+                    'Arthritis': 25000,
+                    'Hypertension': 15000
+                };
+                
+                let base = fallbackMap[conditionVal] || 25000;
+                
                 if (statsRes && statsRes.ok) {
                     const stats = await statsRes.json();
                     const viMap = {'Diabetes':'Tiểu đường','Cancer':'Ung thư','Asthma':'Hen suyễn','Hypertension':'Cao huyết áp','Obesity':'Béo phì','Arthritis':'Viêm khớp'};
                     const viKey = viMap[conditionVal] || conditionVal;
                     const match = stats.find(s => s['Medical Condition'] === viKey);
-                    if (match) base = match.avg_actual;
+                    if (match) {
+                         const live_mean = match.avg_actual || match.avg_predicted;
+                         // Blend if match found
+                         base = (base * 0.3) + (live_mean * 0.7);
+                    }
                 }
+                
                 if (age < 12) base *= 0.6;
-                else if (age > 75) base *= 1.1;
+                else if (age > 75) base *= 1.15;
+                
                 document.getElementById('infer-result').style.display = 'block';
                 document.getElementById('infer-val').textContent = '$' + Math.round(base).toLocaleString('vi-VN');
-                document.getElementById('infer-meta').innerHTML = '<span style="color:#f59e0b">Offline Mode - Dự báo từ dữ liệu cục bộ</span>';
+                document.getElementById('infer-meta').innerHTML = '<span style="color:#f59e0b">Chế độ Ngoại tuyến - Dự báo từ dữ liệu dự phòng</span>';
             } finally {
                 btn.textContent = "CHẠY DỰ BÁO AI";
                 btn.disabled = false;
@@ -403,7 +437,7 @@
                         rtChart.update('active');
 
                         document.getElementById('nd-kafka').classList.add('online');
-                        document.getElementById('nd-kafka').textContent = 'KAFKA LIVE';
+                        document.getElementById('nd-kafka').textContent = 'KAFKA TRỰC TIẾP';
                     }
                 }
             } catch (e) { console.warn("Sync failed", e); }

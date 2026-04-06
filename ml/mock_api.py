@@ -32,16 +32,29 @@ def predict():
     # Giả lập độ trễ xử lý AI
     time.sleep(0.5)
     
-    # Trả về số ngẫu nhiên trong khoảng giá phổ biến của dataset
-    mock_val = random.uniform(8000.0, 45000.0)
+    data = request.json or {}
+    condition = data.get('Medical Condition', 'Diabetes')
+    
+    # Realistic Pricing Map for Mock testing
+    PRICING = {
+        'Diabetes': (15000, 25000),
+        'Cancer': (50000, 100000),
+        'Asthma': (4000, 9000),
+        'Obesity': (9000, 18000),
+        'Arthritis': (15000, 30000),
+        'Hypertension': (7000, 15000)
+    }
+    
+    min_v, max_v = PRICING.get(condition, (10000, 40000))
+    mock_val = random.uniform(min_v, max_v)
     
     return jsonify({
         "status": "success",
         "predicted_billing": round(mock_val, 2),
         "currency": "USD",
-        "confidence_note": "MOCK DATA - No real model used."
+        "confidence_note": f"MOCK DATA for {condition}"
     })
 
 if __name__ == '__main__':
-    print("⚠️  MOCK API is running for Member 4 testing...")
+    print("MOCK API is running for Member 4 testing...")
     app.run(host='0.0.0.0', port=5000)

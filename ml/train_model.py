@@ -25,13 +25,13 @@ CHART_DIR = os.path.join("..", "output", "charts")
 os.makedirs(CHART_DIR, exist_ok=True)
 
 def train_pipeline():
-    print("🚀 [Step 1] Loading cleaned data from Hadoop output...")
+    print("[Step 1] Loading cleaned data from Hadoop output...")
     if not os.path.exists(INPUT_DATA):
-        print(f"❌ Error: {INPUT_DATA} not found! Run Hadoop pipeline first.")
+        print(f"Error: {INPUT_DATA} not found! Run Hadoop pipeline first.")
         # Nếu chưa có file cleaned_data.csv, ta sẽ thử dùng healthcare_dataset.csv gốc để demo
         INPUT_DATA_FALLBACK = os.path.join("..", "hadoop", "data", "raw", "healthcare_dataset.csv")
         if os.path.exists(INPUT_DATA_FALLBACK):
-            print(f"⚠️  Sử dụng dữ liệu gốc tại {INPUT_DATA_FALLBACK} để huấn luyện thử nghiệm...")
+            print(f"Sử dụng dữ liệu gốc tại {INPUT_DATA_FALLBACK} để huấn luyện thử nghiệm...")
             df = pd.read_csv(INPUT_DATA_FALLBACK)
             # Giả lập cột Length_of_Stay nếu chưa có
             if 'Length_of_Stay' not in df.columns and 'Date of Admission' in df.columns and 'Discharge Date' in df.columns:
@@ -44,7 +44,7 @@ def train_pipeline():
         df = pd.read_csv(INPUT_DATA)
 
     # 1. TIỀN XỬ LÝ (PREPROCESSING)
-    print("🧹 [Step 2] Preprocessing features...")
+    print("[Step 2] Preprocessing features...")
     drop_cols = ['Name', 'Doctor', 'Date of Admission', 'Discharge Date']
     df = df.drop(columns=[c for c in drop_cols if c in df.columns])
 
@@ -80,7 +80,7 @@ def train_pipeline():
     X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
     # 2. XÂY DỰNG MODEL (DEEP LEARNING)
-    print("🧠 [Step 3] Building TensorFlow Model...")
+    print("[Step 3] Building TensorFlow Model...")
     model = Sequential([
         Dense(128, activation='relu', input_shape=(X_train.shape[1],)),
         Dropout(0.3),
@@ -108,7 +108,7 @@ def train_pipeline():
     )
 
     # 3. ĐÁNH GIÁ (EVALUATION)
-    print("📊 [Step 5] Evaluating model performance...")
+    print("[Step 5] Evaluating model performance...")
     y_pred = model.predict(X_test)
     
     mae = mean_absolute_error(y_test, y_pred)
@@ -138,7 +138,7 @@ def train_pipeline():
     plt.legend()
     plt.grid(True)
     plt.savefig(os.path.join(CHART_DIR, 'loss_curve.png'))
-    print(f"✅ Training completed. Outputs saved in {ML_DIR}/")
+    print(f"Training completed. Outputs saved in {ML_DIR}/")
 
 if __name__ == "__main__":
     train_pipeline()

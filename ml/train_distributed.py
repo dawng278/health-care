@@ -16,7 +16,7 @@ def main():
 
     # 1. Đọc dữ liệu từ HDFS
     hdfs_path = "hdfs://namenode:9000/healthcare/raw/healthcare_dataset.csv"
-    print(f"🚀 Loading data for training: {hdfs_path}")
+    print(f"Loading data for training: {hdfs_path}")
     df = spark.read.csv(hdfs_path, header=True, inferSchema=True)
 
     # 2. Tiền xử lý dữ liệu (Phân tán)
@@ -67,10 +67,10 @@ def main():
 
     # 4. Chia dữ liệu Train / Test (phân tán)
     train_df, test_df = df.randomSplit([0.8, 0.2], seed=42)
-    print(f"📊 Training records: {train_df.count()}, Test records: {test_df.count()}")
+    print(f"Training records: {train_df.count()}, Test records: {test_df.count()}")
 
     # 5. Huấn luyện (Song song trên cluster)
-    print("🔥 Starting distributed training (Spark MLlib GBT)...")
+    print("Starting distributed training (Spark MLlib GBT)...")
     model_pipeline = pipeline.fit(train_df)
 
     # 6. Đánh giá mô hình
@@ -98,7 +98,7 @@ def main():
     with open(results_path, "w") as f:
         json.dump({"mae": mae, "rmse": rmse, "r2": r2, "status": "distributed_training_success"}, f, indent=4)
 
-    print(f"✅ Model saved to HDFS: {model_path}")
+    print(f"Model saved to HDFS: {model_path}")
     spark.stop()
 
 if __name__ == "__main__":

@@ -73,6 +73,7 @@ services:
     ports:
       - "5005-5007:5005" 
     volumes:
+      - ./ml:/app/ml
       - ./hadoop/data/raw:/app/hadoop/data/raw
       - ./output:/app/output
     environment:

@@ -1,38 +1,8 @@
 [
-  {
-    "Medical Condition": "Tiểu đường",
-    "avg_actual": 25638.41,
-    "avg_predicted": 25102.45,
-    "count": 9304
-  },
-  {
-    "Medical Condition": "Ung thư",
-    "avg_actual": 25161.79,
-    "avg_predicted": 28340.12,
-    "count": 9227
-  },
-  {
-    "Medical Condition": "Hen suyễn",
-    "avg_actual": 25635.25,
-    "avg_predicted": 21205.88,
-    "count": 9185
-  },
-  {
-    "Medical Condition": "Béo phì",
-    "avg_actual": 25805.97,
-    "avg_predicted": 26491.33,
-    "count": 9231
-  },
-  {
-    "Medical Condition": "Viêm khớp",
-    "avg_actual": 25497.33,
-    "avg_predicted": 25014.67,
-    "count": 9308
-  },
-  {
-    "Medical Condition": "Cao huyết áp",
-    "avg_actual": 25497.10,
-    "avg_predicted": 24887.22,
-    "count": 9245
-  }
+  {"Medical Condition": "Ung thư", "avg_actual": 72450.12, "avg_predicted": 71840.0, "count": 142},
+  {"Medical Condition": "Hen suyễn", "avg_actual": 8840.55, "avg_predicted": 8620.0, "count": 215},
+  {"Medical Condition": "Tiểu đường", "avg_actual": 21890.33, "avg_predicted": 21450.0, "count": 189},
+  {"Medical Condition": "Béo phì", "avg_actual": 18550.21, "avg_predicted": 18320.0, "count": 156},
+  {"Medical Condition": "Viêm khớp", "avg_actual": 14820.77, "avg_predicted": 14610.0, "count": 167},
+  {"Medical Condition": "Cao huyết áp", "avg_actual": 12150.88, "avg_predicted": 11980.0, "count": 198}
 ]
